@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input id="msg" placeholder="Message">
+    <button onclick="send()">Send</button>
+    <div id="log"></div>
+
+    <script>
+        let ws;
+        
+        const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(`${wsProtocol}//${location.host}/ws`);
+        
+        ws.onmessage = (e) => {
+            log.innerHTML += `<br>Received: ${e.data}`;
+        };
+        
+        ws.onopen = () => {
+            log.innerHTML += '<br>Connected!';
+        };
+
+        function send() {
+            const message = msg.value;
+            ws.send(message);
+            log.innerHTML += `<br>Sent: ${message}`;
+            msg.value = '';
+        }
+
+        msg.onkeypress = (e) => {
+            if (e.key === 'Enter') send();
+        };
+    </script>
+</body>
+</html>
